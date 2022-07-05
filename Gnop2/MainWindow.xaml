@@ -5,8 +5,43 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Gnop2"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="600" Width="800" ResizeMode="NoResize">
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1*" />
+            <RowDefinition Height="9*" />
+        </Grid.RowDefinitions>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*" />
+                <ColumnDefinition Width="1*" />
+                <ColumnDefinition Width="1*" />
+                <ColumnDefinition Width="1*" />
+            </Grid.ColumnDefinitions>
+            <Button Content="Start/Stop"
+                    />
+            <Button Content="Leaderboard"
+                    Grid.Column="3"/>
+            <TextBlock Text="Player 1 Score"
+                       Grid.Column="1"
+                       Name="Txbl_P1Score"
+                       />
+            <TextBlock Text="Player 2 Score"
+                       Grid.Column="2"
+                       Name="Txbl_P2Score"
+                       />
+        </Grid>
+
+        <Canvas Name="GameArea"
+                Background="DarkSlateGray"
+                Grid.Row="1">
+            <Ellipse Height="20"
+                     Width="20"
+                     Name="Ball"
+                     Canvas.Left="390"
+                     Canvas.Top="260"
+                     Fill="White"/>
+        </Canvas>
 
     </Grid>
 </Window>
