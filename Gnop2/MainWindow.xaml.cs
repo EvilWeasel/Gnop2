@@ -14,6 +14,7 @@ namespace Gnop2
         // TODO: Refactor to use negative velocity for reverse movement
         private double ballVelocity = 5;
         private bool directionRight = true;
+        private bool directionBottom = true;
 
         public MainWindow()
         {
@@ -26,14 +27,27 @@ namespace Gnop2
         {
             // get current x position of ball
             double x = Canvas.GetLeft(Ball);
+            double y = Canvas.GetTop(Ball);
 
+            #region directionX
             // move ball on x
             if (directionRight) Canvas.SetLeft(Ball, x + ballVelocity);
             else Canvas.SetLeft(Ball, x - ballVelocity);
 
-            // check if ball is outside boundary area
+            // check if ball is outside x boundary area
             if (x >= GameArea.ActualWidth - Ball.ActualWidth) directionRight = false;
             else if (x <= 0) directionRight = true;
+            #endregion
+
+            #region directionY
+            // move ball on y
+            if (directionBottom) Canvas.SetTop(Ball, y + ballVelocity);
+            else Canvas.SetTop(Ball, y - ballVelocity);
+
+            // check if ball is outside y boundary area
+            if (y >= GameArea.ActualHeight - Ball.ActualHeight) directionBottom = false;
+            else if (y <= 0) directionBottom = true;
+            #endregion
         }
 
         private void btn_start_click(object sender, RoutedEventArgs e)

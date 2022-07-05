@@ -41,6 +41,14 @@
                      Canvas.Left="390"
                      Canvas.Top="260"
                      Fill="White"/>
+            <Rectangle Name="LeftPaddle"
+                       Width="20"
+                       Height="100"
+                       Fill="DarkOrange" />
+            <Rectangle Name="RightPaddle"
+                       Width="20"
+                       Height="100"
+                       Fill="DarkOrange" />
         </Canvas>
 
     </Grid>
