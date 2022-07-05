@@ -22,6 +22,10 @@ namespace Gnop2
         private bool PRUp = false;
         private bool PRDown = false;
 
+        // TODO: Aufgabe
+        /*
+         * Bauen Sie eine Collision-Detection ein, um den Ball an den "Paddles" abprallen zu lassen.
+         */
         public MainWindow()
         {
             InitializeComponent();
