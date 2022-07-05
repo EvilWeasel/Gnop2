@@ -1,17 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using System.Windows.Threading;
 
 namespace Gnop2
 {
@@ -20,9 +10,29 @@ namespace Gnop2
     /// </summary>
     public partial class MainWindow : Window
     {
+        private DispatcherTimer _animate = new DispatcherTimer();
+        private double ballVelocity = 5;
+
         public MainWindow()
         {
             InitializeComponent();
+            _animate.Interval = TimeSpan.FromMilliseconds(16);
+            _animate.Tick += _animateBall;
+        }
+
+        private void _animateBall(object? sender, EventArgs e)
+        {
+            // get current x position of ball
+            double x = Canvas.GetLeft(Ball);
+
+            Canvas.SetLeft(Ball, x + ballVelocity);
+        }
+
+        private void btn_start_click(object sender, RoutedEventArgs e)
+        {
+            // toggle game loop
+            if (_animate.IsEnabled) _animate.Stop();
+            else _animate.Start();
         }
     }
 }
