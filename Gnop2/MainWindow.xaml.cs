@@ -56,10 +56,28 @@ namespace Gnop2
             if (_animate.IsEnabled)
             {
                 _animate.Stop();
-                Canvas.SetLeft(Ball, (GameArea.ActualWidth - Ball.ActualWidth) / 2);
-                Canvas.SetTop(Ball, (GameArea.ActualHeight - Ball.ActualHeight) / 2);
+                Init();
             }
             else _animate.Start();
+        }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            Init();
+        }
+
+        private void Init()
+        {
+            // set position of right paddle
+            Canvas.SetLeft(RightPaddle, GameArea.ActualWidth - RightPaddle.ActualWidth);
+            Canvas.SetTop(RightPaddle, (GameArea.ActualHeight - RightPaddle.ActualHeight) / 2);
+            // set position of left paddle
+            Canvas.SetLeft(LeftPaddle, 0);
+            Canvas.SetTop(LeftPaddle, (GameArea.ActualHeight - LeftPaddle.ActualHeight) / 2);
+
+            // set position of ball
+            Canvas.SetLeft(Ball, (GameArea.ActualWidth - Ball.ActualWidth) / 2);
+            Canvas.SetTop(Ball, (GameArea.ActualHeight - Ball.ActualHeight) / 2);
         }
     }
 }
