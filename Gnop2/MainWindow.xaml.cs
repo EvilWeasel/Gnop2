@@ -39,7 +39,7 @@ namespace Gnop2
         {
             //double plX = Canvas.GetLeft(LeftPaddle);
             //double prX = Canvas.GetLeft(RightPaddle);
-            double plY = Canvas.GetTop(LeftPaddle); 
+            double plY = Canvas.GetTop(LeftPaddle);
             double prY = Canvas.GetTop(RightPaddle);
             // Left Player Movement
             if (PLUp)
@@ -48,7 +48,7 @@ namespace Gnop2
                 else Canvas.SetTop(LeftPaddle, 0);
             else if (PLDown)
                 if (plY + LeftPaddle.ActualHeight < GameArea.ActualHeight)
-                    Canvas.SetTop(LeftPaddle, plY + paddleVelocity); 
+                    Canvas.SetTop(LeftPaddle, plY + paddleVelocity);
             // Right Player Movement
             if (PRUp)
                 if (prY > paddleVelocity)
@@ -65,42 +65,24 @@ namespace Gnop2
             double x = Canvas.GetLeft(Ball);
             double y = Canvas.GetTop(Ball);
 
-            #region paddle collision detection
-            // left paddle collision detection
-            if (x <= LeftPaddle.ActualWidth &&
-                y >= Canvas.GetTop(LeftPaddle) &&
-                y + Ball.ActualHeight <= Canvas.GetTop(LeftPaddle) + LeftPaddle.ActualHeight)
-            {
-                directionRight = true;
-                BallVelocityChangeY(LeftPaddle, initialBallVelocityY);
 
-            }
-            // right paddle collision detection
-            if (x + Ball.ActualWidth >= Canvas.GetLeft(RightPaddle) &&
-                y >= Canvas.GetTop(RightPaddle) &&
-                y + Ball.ActualHeight <= Canvas.GetTop(RightPaddle) + RightPaddle.ActualHeight)
-            {
-                directionRight = false;
-                BallVelocityChangeY(RightPaddle, initialBallVelocityY);
-            }
-            #endregion
             #region directionX
             // move ball on x
             if (directionRight) Canvas.SetLeft(Ball, x + ballVelocityX);
             else Canvas.SetLeft(Ball, x - ballVelocityX);
 
             //// check if ball is outside x upper boundary of gamearea
-            if (x >= GameArea.ActualWidth - Ball.ActualWidth)
-            {
-                PLScore += 1;
-                Init();
-            }
-            // ball is outside lower boundary of gamearea
-            else if (x <= 0)
-            {
-                PRScore += 1;
-                Init();
-            }
+            //if (x >= GameArea.ActualWidth - Ball.ActualWidth)
+            //{
+            //    PLScore += 1;
+            //    Init();
+            //}
+            //// ball is outside lower boundary of gamearea
+            //else if (x <= 0)
+            //{
+            //    PRScore += 1;
+            //    Init();
+            //}
             #endregion
 
             #region directionY
@@ -112,7 +94,38 @@ namespace Gnop2
             if (y >= GameArea.ActualHeight - Ball.ActualHeight) directionBottom = false;
             else if (y <= 0) directionBottom = true;
             #endregion
-
+            #region paddle collision detection
+            // left paddle collision detection
+            if (x <= LeftPaddle.ActualWidth)
+            {
+                if (y >= Canvas.GetTop(LeftPaddle) &&
+                    y + Ball.ActualHeight <= Canvas.GetTop(LeftPaddle) + LeftPaddle.ActualHeight)
+                {
+                    directionRight = true;
+                    BallVelocityChangeY(LeftPaddle, initialBallVelocityY);
+                }
+                else
+                {
+                    PLScore += 1;
+                    Init();
+                }
+            }
+            // right paddle collision detection
+            if (x + Ball.ActualWidth >= Canvas.GetLeft(RightPaddle))
+            {
+                if (y >= Canvas.GetTop(RightPaddle) &&
+                    y + Ball.ActualHeight <= Canvas.GetTop(RightPaddle) + RightPaddle.ActualHeight)
+                {
+                    directionRight = false;
+                    BallVelocityChangeY(RightPaddle, initialBallVelocityY);
+                }
+                else
+                {
+                    PRScore += 1;
+                    Init();
+                }
+            }
+            #endregion
             // speed up ball on x axis
             ballVelocityX *= 1.001;
         }
@@ -130,7 +143,7 @@ namespace Gnop2
                 if (directionBottom)
                 {
                     var check = ballVelocityY + velocityChange;
-                    if (check < 0) directionBottom=false;
+                    if (check < 0) directionBottom = false;
                     ballVelocityY = Math.Abs(check);
                 }
                 else
