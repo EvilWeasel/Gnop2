@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Windows.Shapes;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -13,7 +14,10 @@ namespace Gnop2
     {
         private DispatcherTimer _animate = new DispatcherTimer();
         // TODO: Refactor to use negative velocity for reverse movement
-        private double ballVelocity = 5;
+        private double ballVelocityX = 50;
+        private double ballVelocityY = 0;
+        private const double initialBallVelocityX = 5;
+        private const double initialBallVelocityY = 5;
         private double paddleVelocity = 10;
         private bool directionRight = true;
         private bool directionBottom = true;
@@ -61,11 +65,31 @@ namespace Gnop2
             double x = Canvas.GetLeft(Ball);
             double y = Canvas.GetTop(Ball);
 
-            // move ball on x
-            if (directionRight) Canvas.SetLeft(Ball, x + ballVelocity);
-            else Canvas.SetLeft(Ball, x - ballVelocity);
+            #region paddle collision detection
+            // left paddle collision detection
+            if (x <= LeftPaddle.ActualWidth &&
+                y >= Canvas.GetTop(LeftPaddle) &&
+                y + Ball.ActualHeight <= Canvas.GetTop(LeftPaddle) + LeftPaddle.ActualHeight)
+            {
+                directionRight = true;
+                BallVelocityChangeY(LeftPaddle, initialBallVelocityY);
 
-            // check if ball is outside x upper boundary of gamearea
+            }
+            // right paddle collision detection
+            if (x + Ball.ActualWidth >= Canvas.GetLeft(RightPaddle) &&
+                y >= Canvas.GetTop(RightPaddle) &&
+                y + Ball.ActualHeight <= Canvas.GetTop(RightPaddle) + RightPaddle.ActualHeight)
+            {
+                directionRight = false;
+                BallVelocityChangeY(RightPaddle, initialBallVelocityY);
+            }
+            #endregion
+            #region directionX
+            // move ball on x
+            if (directionRight) Canvas.SetLeft(Ball, x + ballVelocityX);
+            else Canvas.SetLeft(Ball, x - ballVelocityX);
+
+            //// check if ball is outside x upper boundary of gamearea
             if (x >= GameArea.ActualWidth - Ball.ActualWidth)
             {
                 PLScore += 1;
@@ -77,32 +101,57 @@ namespace Gnop2
                 PRScore += 1;
                 Init();
             }
-            #region paddle collision detection
-            // left paddle collision detection
-            if (x <= LeftPaddle.ActualWidth &&
-                y >= Canvas.GetTop(LeftPaddle) &&
-                y + Ball.ActualHeight <= Canvas.GetTop(LeftPaddle) + LeftPaddle.ActualHeight)
-            {
-                directionRight = true;
-            }
-            // right paddle collision detection
-            if (x + Ball.ActualWidth >= Canvas.GetLeft(RightPaddle) &&
-                y >= Canvas.GetTop(RightPaddle) &&
-                y + Ball.ActualHeight <= Canvas.GetTop(RightPaddle) + RightPaddle.ActualHeight)
-            {
-                directionRight = false;
-            }
             #endregion
 
             #region directionY
             // move ball on y
-            if (directionBottom) Canvas.SetTop(Ball, y + ballVelocity);
-            else Canvas.SetTop(Ball, y - ballVelocity);
+            if (directionBottom) Canvas.SetTop(Ball, y + ballVelocityY);
+            else Canvas.SetTop(Ball, y - ballVelocityY);
 
             // check if ball is outside y boundary area
             if (y >= GameArea.ActualHeight - Ball.ActualHeight) directionBottom = false;
             else if (y <= 0) directionBottom = true;
             #endregion
+
+            // speed up ball on x axis
+            ballVelocityX *= 1.001;
+        }
+
+        private void BallVelocityChangeY(Rectangle rect, double scaling)
+        {
+            double paddleYmid = Canvas.GetTop(rect) + rect.ActualHeight / 2;
+            double ballYmid = Canvas.GetTop(Ball) + Ball.ActualHeight / 2;
+            double offset = ballYmid - paddleYmid;
+            double relOffset = offset / (rect.ActualHeight / 2);
+            double velocityChange = relOffset * scaling;
+            // velocity change negativ
+            if (velocityChange < 0)
+            {
+                if (directionBottom)
+                {
+                    var check = ballVelocityY + velocityChange;
+                    if (check < 0) directionBottom=false;
+                    ballVelocityY = Math.Abs(check);
+                }
+                else
+                {
+                    ballVelocityY -= velocityChange / 2;
+                }
+            }
+            // velocity change positiv
+            else
+            {
+                if (directionBottom)
+                {
+                    ballVelocityY += velocityChange / 2;
+                }
+                else
+                {
+                    var check = ballVelocityY - velocityChange;
+                    if (check < 0) directionBottom = true;
+                    ballVelocityY = Math.Abs(check);
+                }
+            }
         }
 
         private void btn_start_click(object sender, RoutedEventArgs e)
@@ -135,6 +184,8 @@ namespace Gnop2
             // set scoreboard
             Txbl_P1Score.Text = PLScore.ToString();
             Txbl_P2Score.Text = PRScore.ToString();
+            ballVelocityY = 0;
+            ballVelocityX = initialBallVelocityX;
         }
 
         #region KeyboardEvents for Movement
